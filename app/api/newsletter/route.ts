@@ -62,8 +62,8 @@ export async function GET(req: NextRequest) {
   const { after: lastWeekAfter, before: lastWeekBefore } = getLastWeekRange();
 
   const [productsOfTheDay, productsOfTheWeek] = await Promise.all([
-    fetchPosts(yesterdayAfter, yesterdayBefore, "product-of-the-day"),
-    fetchPosts(lastWeekAfter, lastWeekBefore, "product-of-the-week"),
+    fetchPosts(yesterdayAfter, yesterdayBefore),
+    fetchPosts(lastWeekAfter, lastWeekBefore),
   ]);
 
   // Convert the newsletter object to an array of posts for the sendNewsletter function
