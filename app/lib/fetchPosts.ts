@@ -1,7 +1,18 @@
 import axios from 'axios';
 
-export async function fetchPosts(after: Date, before: Date, category: string) {
+interface PostNode {
+  name: string;
+  tagline: string;
+  votesCount: number;
+  createdAt: string;
+  url: string;
+  website: string;
+  thumbnail: {
+    url: string;
+  };
+}
 
+export async function fetchPosts(after: Date, before: Date) {
   const response = await axios.post(
     'https://api.producthunt.com/v2/api/graphql',
     {
@@ -37,7 +48,7 @@ export async function fetchPosts(after: Date, before: Date, category: string) {
     }
   );
 
-  console.log(response.data.data.posts.edges.map((edge: any) => edge.node));
+  console.log(response.data.data.posts.edges.map((edge: { node: PostNode }) => edge.node));
 
-  return response.data.data.posts.edges.map((edge: any) => edge.node);
+  return response.data.data.posts.edges.map((edge: { node: PostNode }) => edge.node);
 }

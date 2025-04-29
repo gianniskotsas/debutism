@@ -1,5 +1,5 @@
 import Newsletter from "@/emails/Newsletter";
-import { Post, Newsletter as NewsletterType } from "@/types";
+import { Newsletter as NewsletterType } from "@/types";
 import { render } from "@react-email/render";
 import { Resend } from "resend";
 
