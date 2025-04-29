@@ -1,0 +1,15 @@
+{
+    "functions": {
+      "app/api/newsletter/route.ts": {
+        "memory": 256,
+        "maxDuration": 10
+      }
+    },
+    "scheduled": [
+      {
+        "path": "/api/newsletter?secret=b121e9b1873bdc2a5611f33204a6a2b55b7e52686577eac593247006c8ce6eb8",
+        "schedule": "0 11 * * *"
+      }
+    ]
+  }
+  
