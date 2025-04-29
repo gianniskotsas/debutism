@@ -1,6 +1,5 @@
 import Newsletter from "@/emails/Newsletter";
 import { Newsletter as NewsletterType } from "@/types";
-import { render } from "@react-email/render";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
