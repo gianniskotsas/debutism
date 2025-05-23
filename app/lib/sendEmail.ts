@@ -5,24 +5,35 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function sendNewsletter(newsletter: NewsletterType) {
-  // await resend.broadcasts.create({
-  //   audienceId: process.env.RESEND_AUDIENCE_ID!,
-  //   from: "giannis@veevo.app",
-  //   subject: "hello world",
-  //   react: Newsletter({ posts }),
-  // });
-
   const today = new Date();
   const dayOfWeek = today.toLocaleDateString('en-US', { day: '2-digit' });
   const month = today.toLocaleDateString('en-US', { month: 'long' });
   const year = today.toLocaleDateString('en-US', { year: 'numeric' });
 
-  const subject = `debutism | ${dayOfWeek} ${month} ${year}`
+  const subject = `debutism | ${dayOfWeek} ${month} ${year}`;
 
-  await resend.emails.send({
-    from: "debutism@veevo.app",
-    to: ["giannis@kotsas.com", "kkrachtop@gmail.com"],
-    subject: subject,
-    react: Newsletter(newsletter),
-  });
+  try {
+    // Create the broadcast
+    const broadcast = await resend.broadcasts.create({
+      audienceId: process.env.RESEND_AUDIENCE_ID!,
+      from: "debutism@veevo.app",
+      replyTo: "giannis@kotsas.com",
+      subject: subject,
+      react: Newsletter(newsletter),
+    });
+
+    console.log('Broadcast created:', broadcast);
+
+    // Send the broadcast immediately
+    // Note: broadcast.data.id is the correct path for the ID
+    if (broadcast.data?.id) {
+      await resend.broadcasts.send(broadcast.data.id);
+      console.log('Broadcast sent successfully');
+    } else {
+      throw new Error('Broadcast creation failed - no ID returned');
+    }
+  } catch (error) {
+    console.error('Error creating or sending broadcast:', error);
+    throw error;
+  }
 }

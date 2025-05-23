@@ -19,11 +19,11 @@ const config: Config = {
         spotlight: {
           "0%": {
             opacity: "0",
-            transform: "translate(-72%, -62%) scale(0.5)",
+            transform: "translate(100%, -80%) scale(0.5)", // Start from top-right
           },
           "100%": {
             opacity: "1",
-            transform: "translate(-50%,-40%) scale(1)",
+            transform: "translate(-20%, -20%) scale(1)", // End at bottom-left area
           },
         },
       },
@@ -32,4 +32,4 @@ const config: Config = {
   plugins: [require("tailwindcss-animate")],
 };
 
-export default config; 
+export default config;

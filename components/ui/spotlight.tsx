@@ -10,12 +10,13 @@ export const Spotlight = ({ className, fill }: SpotlightProps) => {
   return (
     <svg
       className={cn(
-        "animate-spotlight pointer-events-none absolute left-1/2 bg-gradient-to-r from-black to-neutral-900 z-[1]  h-[169%] w-[138%] lg:w-[100%] opacity-0",
+        "animate-spotlight pointer-events-none absolute z-[1] h-[169%] w-[138%] lg:w-[83%] opacity-0",
         className
       )}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 3787 2842"
       fill="none"
+      style={{ transform: 'scaleX(-1)' }}
     >
       <g filter="url(#filter)">
         <ellipse
@@ -53,4 +54,4 @@ export const Spotlight = ({ className, fill }: SpotlightProps) => {
       </defs>
     </svg>
   );
-}; 
+};

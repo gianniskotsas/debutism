@@ -7,7 +7,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import Image from "next/image";
-import SpotlightPreview from "@/components/spotlight-demo";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -39,6 +38,7 @@ export default function Home() {
     try {
       setIsSubmitting(true);
       await axios.post("/api/newsletter", data);
+      await axios.post("/api/confirmation", { email: data.email });
       toast.success("Successfully subscribed to the newsletter!");
       form.reset();
     } catch (error: any) {
@@ -56,12 +56,12 @@ export default function Home() {
       <div className="container mx-auto px-4 max-w-6xl z-10 relative h-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
           {/* Left side - Content */}
-          <div className="flex flex-col justify-center space-y-6 text-left px-2 py-8 lg:py-0">
-            <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight">
+          <div className="flex flex-col justify-center space-y-10 text-left px-2 py-8 lg:py-0">
+            <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-normal ">
               The <span className="font-dm-serif font-normal italic mr-1.5" style={{ fontFamily: 'var(--font-dm-serif), serif' }}>Newsletter</span> for the tech early adopters
             </h1>
 
-            <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-2xl">
+            <p className="text-base md:text-lg -mt-6 lg:text-xl text-gray-300 max-w-2xl">
               Discover the most successful Product Hunt launches delivered to your
               inbox daily
             </p>

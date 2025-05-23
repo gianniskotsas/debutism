@@ -17,6 +17,64 @@ interface PostNode {
 // Cookie storage path
 const COOKIES_FILE = path.join(process.cwd(), '.ph-cookies.json');
 
+// Dub.co API functions
+async function createDubShortLink(url: string): Promise<string> {
+  try {
+    console.log(`Creating Dub.co short link for: ${url}`);
+    
+    if (!process.env.DUB_API_KEY) {
+      console.warn('DUB_API_KEY not found, using original URL');
+      return url;
+    }
+    
+    const response = await axios.post('https://api.dub.co/links', {
+      url: url,
+      domain: 'go.debutism.com',
+      folderId: 'fold_1JVYQW1T88ZD0QZF62MY2088R'
+    }, {
+      headers: {
+        'Authorization': `Bearer ${process.env.DUB_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.data && response.data.shortLink) {
+      console.log(`Short link created: ${response.data.shortLink}`);
+      return response.data.shortLink;
+    } else {
+      console.warn(`No shortLink in response for ${url}, using original URL`);
+      return url;
+    }
+  } catch (error: any) {
+    console.error(`Failed to create short link for ${url}:`, error.message);
+    // If short link creation fails, return the original URL
+    return url;
+  }
+}
+
+async function createShortLinksForPosts(posts: PostNode[]): Promise<PostNode[]> {
+  console.log(`Creating short links for ${posts.length} posts...`);
+  
+  // Process posts sequentially to avoid overwhelming the Dub.co API
+  const postsWithShortLinks: PostNode[] = [];
+  
+  for (const post of posts) {
+    const shortLink = await createDubShortLink(post.url);
+    postsWithShortLinks.push({
+      ...post,
+      url: shortLink
+    });
+    
+    // Add a small delay between requests to respect rate limits
+    if (postsWithShortLinks.length < posts.length) {
+      await delay(500); // 500ms delay between requests
+    }
+  }
+
+  console.log('Short links creation completed');
+  return postsWithShortLinks;
+}
+
 // Create a persistent axios instance with browser-like configuration
 const createBrowserLikeClient = (): AxiosInstance => {
   const client = axios.create({
@@ -230,7 +288,10 @@ export async function fetchPosts(after: Date, before: Date): Promise<PostNode[]>
       if (response.data?.data?.posts?.edges) {
         const posts = response.data.data.posts.edges.map((edge: { node: PostNode }) => edge.node);
         console.log('Posts fetched successfully:', posts.length);
-        return posts;
+        
+        // Create short links for all posts
+        const postsWithShortLinks = await createShortLinksForPosts(posts);
+        return postsWithShortLinks;
       } else {
         throw new Error('Invalid response structure from Product Hunt API');
       }
