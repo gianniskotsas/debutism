@@ -1,7 +1,15 @@
 import { fetchPosts } from "@/app/lib/fetchPosts";
 import { sendNewsletter } from "@/app/lib/sendEmail";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Newsletter } from "@/types"; // Assuming you export Post/Newsletter types here
+import { Resend } from 'resend';
+import { z } from 'zod';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+const schema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+});
 
 function getYesterdayRange() {
   const today = new Date();
@@ -75,4 +83,48 @@ export async function GET(req: NextRequest) {
   await sendNewsletter(newsletterProps);
 
   return new Response(JSON.stringify({ status: "sent" }), { status: 200 });
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Parse the request body
+    const body = await request.json();
+    
+    // Validate the email
+    const { email } = schema.parse(body);
+    
+    // Add the email to Resend audience
+    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    
+    if (!audienceId) {
+      return NextResponse.json(
+        { error: 'RESEND_AUDIENCE_ID is not configured' },
+        { status: 500 }
+      );
+    }
+
+    // Add subscriber to audience
+    await resend.contacts.create({
+      email,
+      audienceId,
+    });
+
+    return NextResponse.json(
+      { success: true, message: 'Successfully subscribed to the newsletter' },
+      { status: 200 }
+    );
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0].message },
+        { status: 400 }
+      );
+    }
+    
+    console.error('Newsletter subscription error:', error);
+    return NextResponse.json(
+      { error: 'Failed to subscribe to the newsletter' },
+      { status: 500 }
+    );
+  }
 }

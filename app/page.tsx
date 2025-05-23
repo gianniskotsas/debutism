@@ -1,103 +1,120 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { useState } from "react";
+import { toast } from "sonner";
+import axios from "axios";
 import Image from "next/image";
+import SpotlightPreview from "@/components/spotlight-demo";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Spotlight } from "@/components/ui/spotlight";
+
+const formSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
+
+  async function onSubmit(data: FormValues) {
+    try {
+      setIsSubmitting(true);
+      await axios.post("/api/newsletter", data);
+      toast.success("Successfully subscribed to the newsletter!");
+      form.reset();
+    } catch (error: any) {
+      const message =
+        error.response?.data?.error || "Failed to subscribe. Please try again.";
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="h-screen w-full bg-black text-white overflow-hidden relative">
+      <Spotlight />
+      <div className="container mx-auto px-4 max-w-6xl z-10 relative h-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+          {/* Left side - Content */}
+          <div className="flex flex-col justify-center space-y-6 text-left px-2 py-8 lg:py-0">
+            <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-tight">
+              The <span className="font-dm-serif font-normal italic mr-1.5" style={{ fontFamily: 'var(--font-dm-serif), serif' }}>Newsletter</span> for the tech early adopters
+            </h1>
+
+            <p className="text-base md:text-lg lg:text-xl text-gray-300 max-w-2xl">
+              Discover the most successful Product Hunt launches delivered to your
+              inbox daily
+            </p>
+
+            <div className="w-full max-w-md">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <Input
+                              placeholder="Your Email Address"
+                              className="h-12 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
+                              {...field}
+                            />
+                            <Button
+                              type="submit"
+                              className="h-12 px-6 bg-white text-black hover:bg-gray-200 whitespace-nowrap"
+                              disabled={isSubmitting}
+                            >
+                              {isSubmitting ? "Subscribing..." : "Subscribe"}
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-red-400" />
+                      </FormItem>
+                    )}
+                  />
+                </form>
+              </Form>
+            </div>
+          </div>
+
+          {/* Right side - Image */}
+          <div className="relative flex items-end justify-center lg:justify-end lg:items-end">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/iphone_debutism_hand.png"
+              alt="iPhone with Product Hunt newsletter in hand"
+              width={400}
+              height={600}
+              className="object-contain object-bottom"
+              priority
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }
