@@ -99,7 +99,7 @@ export async function GET(req: NextRequest) {
     console.log('Newsletter sent successfully');
 
     return new Response(JSON.stringify({ status: "sent" }), { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in newsletter generation:', error);
     
     if (axios.isAxiosError(error)) {
@@ -120,7 +120,7 @@ export async function GET(req: NextRequest) {
     return new Response(
       JSON.stringify({ 
         error: 'Failed to generate newsletter',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Unknown error'
       }), 
       { status: 500 }
     );

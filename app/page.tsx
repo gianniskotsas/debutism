@@ -41,9 +41,13 @@ export default function Home() {
       await axios.post("/api/confirmation", { email: data.email });
       toast.success("Successfully subscribed to the newsletter!");
       form.reset();
-    } catch (error: any) {
-      const message =
-        error.response?.data?.error || "Failed to subscribe. Please try again.";
+    } catch (error: unknown) {
+      let message = "Failed to subscribe. Please try again.";
+      
+      if (axios.isAxiosError(error)) {
+        message = error.response?.data?.error || message;
+      }
+      
       toast.error(message);
     } finally {
       setIsSubmitting(false);

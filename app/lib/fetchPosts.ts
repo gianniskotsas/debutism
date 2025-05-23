@@ -45,8 +45,8 @@ async function createDubShortLink(url: string): Promise<string> {
       console.warn(`No shortLink in response for ${url}, using original URL`);
       return url;
     }
-  } catch (error: any) {
-    console.error(`Failed to create short link for ${url}:`, error.message);
+  } catch (error: unknown) {
+    console.error(`Failed to create short link for ${url}:`, error instanceof Error ? error.message : 'Unknown error');
     // If short link creation fails, return the original URL
     return url;
   }
@@ -150,8 +150,8 @@ async function saveCookies(setCookies: string[]): Promise<void> {
     const cookieString = setCookies.join('; ');
     await fs.writeFile(COOKIES_FILE, cookieString, 'utf8');
     console.log('Cookies saved successfully');
-  } catch (error) {
-    console.warn('Failed to save cookies:', error);
+  } catch {
+    console.warn('Failed to save cookies');
   }
 }
 
@@ -159,7 +159,7 @@ async function loadCookies(): Promise<string | null> {
   try {
     const cookieString = await fs.readFile(COOKIES_FILE, 'utf8');
     return cookieString.trim();
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -168,7 +168,7 @@ async function clearCookies(): Promise<void> {
   try {
     await fs.unlink(COOKIES_FILE);
     console.log('Cookies cleared');
-  } catch (error) {
+  } catch {
     // File doesn't exist, which is fine
   }
 }
@@ -213,14 +213,14 @@ async function warmUpSession(): Promise<void> {
     
     await delay(1000 + Math.random() * 1000);
     console.log('Session warmed up successfully');
-  } catch (error: any) {
-    console.warn('Session warm-up encountered issues, but continuing:', error.message);
+  } catch (error: unknown) {
+    console.warn('Session warm-up encountered issues, but continuing:', error instanceof Error ? error.message : 'Unknown error');
   }
 }
 
 export async function fetchPosts(after: Date, before: Date): Promise<PostNode[]> {
   const maxRetries = 2;
-  let lastError: any;
+  let lastError: unknown;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -296,9 +296,9 @@ export async function fetchPosts(after: Date, before: Date): Promise<PostNode[]>
         throw new Error('Invalid response structure from Product Hunt API');
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       lastError = error;
-      console.error(`Attempt ${attempt}/${maxRetries} failed:`, error.message);
+      console.error(`Attempt ${attempt}/${maxRetries} failed:`, error instanceof Error ? error.message : 'Unknown error');
       
       if (axios.isAxiosError(error)) {
         console.error('Axios error details:');
