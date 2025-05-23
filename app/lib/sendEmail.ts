@@ -14,9 +14,16 @@ export async function sendNewsletter(newsletter: NewsletterType) {
 
   try {
     // Create the broadcast
+
+    const from = process.env.NEWSLETTER_FROM;
+
+    if (!from) {
+      throw new Error("From email not found");
+    }
+
     const broadcast = await resend.broadcasts.create({
       audienceId: process.env.RESEND_AUDIENCE_ID!,
-      from: "debutism@veevo.app",
+      from: from,
       replyTo: "giannis@kotsas.com",
       subject: subject,
       react: Newsletter(newsletter),
