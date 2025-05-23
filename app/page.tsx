@@ -55,9 +55,10 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen w-full bg-black text-white overflow-hidden relative">
+    <div className="h-screen w-full  bg-black text-white overflow-hidden relative">
       <Spotlight />
       <div className="container mx-auto px-4 max-w-6xl z-10 relative h-full">
+        <div className="text-white sm:flex hidden text-3xl font-normal font-dm-serif mt-10 px-2">debutism</div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
           {/* Left side - Content */}
           <div className="flex flex-col justify-center space-y-10 text-left px-2 py-8 lg:py-0">
@@ -103,11 +104,14 @@ export default function Home() {
                   />
                 </form>
               </Form>
+              <div className="text-white sm:flex  font-thin text-sm mt-10">made with ❤️ by gianniskotsas</div>
+
             </div>
+
           </div>
 
           {/* Right side - Image */}
-          <div className="relative flex items-end justify-center lg:justify-end lg:items-end">
+          <div className="relative flex flex-col items-end justify-center lg:justify-end lg:items-end">
             <Image
               src="/iphone_debutism_hand.png"
               alt="iPhone with Product Hunt newsletter in hand"
