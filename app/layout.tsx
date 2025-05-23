@@ -23,7 +23,7 @@ const dmSerif = DM_Serif_Text({
 });
 
 export const metadata: Metadata = {
-  title: "Debutism - Get ideas on what to build next",
+  title: "debutism - Get ideas on what to build next",
   description: "Discover the most successful Product Hunt launches delivered to your inbox daily",
 };
 
