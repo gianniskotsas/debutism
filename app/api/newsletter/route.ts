@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Newsletter } from "@/types"; // Assuming you export Post/Newsletter types here
 import { Resend } from 'resend';
 import { z } from 'zod';
+import axios from 'axios';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -65,24 +66,65 @@ export async function GET(req: NextRequest) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const { after: yesterdayAfter, before: yesterdayBefore } =
-    getYesterdayRange();
-  const { after: lastWeekAfter, before: lastWeekBefore } = getLastWeekRange();
+  try {
+    console.log('Starting newsletter generation...');
+    
+    const { after: yesterdayAfter, before: yesterdayBefore } =
+      getYesterdayRange();
+    const { after: lastWeekAfter, before: lastWeekBefore } = getLastWeekRange();
 
-  const [productsOfTheDay, productsOfTheWeek] = await Promise.all([
-    fetchPosts(yesterdayAfter, yesterdayBefore),
-    fetchPosts(lastWeekAfter, lastWeekBefore),
-  ]);
+    console.log('Fetching posts for date ranges:', {
+      yesterday: { after: yesterdayAfter.toISOString(), before: yesterdayBefore.toISOString() },
+      lastWeek: { after: lastWeekAfter.toISOString(), before: lastWeekBefore.toISOString() }
+    });
 
-  // Convert the newsletter object to an array of posts for the sendNewsletter function
-  const newsletterProps: Newsletter = {
-    productsOfTheDay,
-    productsOfTheWeek,
-  };
+    const [productsOfTheDay, productsOfTheWeek] = await Promise.all([
+      fetchPosts(yesterdayAfter, yesterdayBefore),
+      fetchPosts(lastWeekAfter, lastWeekBefore),
+    ]);
 
-  await sendNewsletter(newsletterProps);
+    console.log('Posts fetched successfully:', {
+      productsOfTheDay: productsOfTheDay.length,
+      productsOfTheWeek: productsOfTheWeek.length
+    });
 
-  return new Response(JSON.stringify({ status: "sent" }), { status: 200 });
+    // Convert the newsletter object to an array of posts for the sendNewsletter function
+    const newsletterProps: Newsletter = {
+      productsOfTheDay,
+      productsOfTheWeek,
+    };
+
+    console.log('Sending newsletter...');
+    await sendNewsletter(newsletterProps);
+    console.log('Newsletter sent successfully');
+
+    return new Response(JSON.stringify({ status: "sent" }), { status: 200 });
+  } catch (error: any) {
+    console.error('Error in newsletter generation:', error);
+    
+    if (axios.isAxiosError(error)) {
+      console.error('This is an Axios error (likely from Product Hunt API):');
+      console.error('Status:', error.response?.status);
+      console.error('Status text:', error.response?.statusText);
+      console.error('Response data:', error.response?.data);
+      
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to fetch data from external API',
+          details: error.response?.data || error.message 
+        }), 
+        { status: 500 }
+      );
+    }
+    
+    return new Response(
+      JSON.stringify({ 
+        error: 'Failed to generate newsletter',
+        details: error.message 
+      }), 
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(request: NextRequest) {
