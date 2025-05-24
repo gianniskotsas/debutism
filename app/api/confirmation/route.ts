@@ -15,6 +15,8 @@ export async function POST(request: NextRequest) {
     const { email } = schema.parse(body);
     const from = process.env.NEWSLETTER_FROM;
 
+    const sender = `debutism <${from}>`;
+
     if (!from) {
       return NextResponse.json(
         { success: false, error: "From email not found" },
@@ -23,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await resend.emails.send({
-      from: from,
+      from: sender,
       to: email,
       subject: "Welcome to debutism - The newsletter for the tech early adopters",
       react: ConfirmationEmail(),

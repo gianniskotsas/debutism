@@ -10,21 +10,21 @@ export async function sendNewsletter(newsletter: NewsletterType) {
   const month = today.toLocaleDateString('en-US', { month: 'long' });
   const year = today.toLocaleDateString('en-US', { year: 'numeric' });
 
-  const subject = `debutism | ${dayOfWeek} ${month} ${year}`;
+  const subject = `Daily product launch digest`;
 
   try {
     // Create the broadcast
 
     const from = process.env.NEWSLETTER_FROM;
-
+    const sender = `debutism <${from}>`;
     if (!from) {
       throw new Error("From email not found");
     }
 
     const broadcast = await resend.broadcasts.create({
       audienceId: process.env.RESEND_AUDIENCE_ID!,
-      from: from,
-      replyTo: "giannis@kotsas.com",
+      from: sender,
+      replyTo: from,
       subject: subject,
       react: Newsletter(newsletter),
     });
