@@ -22,6 +22,7 @@ export async function sendNewsletter(newsletter: NewsletterType) {
     }
 
     const broadcast = await resend.broadcasts.create({
+      name: `debutism | ${dayOfWeek} ${month} ${year}`,
       audienceId: process.env.RESEND_AUDIENCE_ID!,
       from: sender,
       replyTo: from,
