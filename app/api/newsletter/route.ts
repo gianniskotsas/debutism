@@ -60,9 +60,9 @@ function getLastWeekRange() {
 
 export async function GET(req: NextRequest) {
 
-  const secret = req.nextUrl.searchParams.get("secret");
-
-  if (secret !== process.env.DEBUTISM_SECRET) {
+  // Use Vercel's built-in cron security instead of URL parameters
+  const authHeader = req.headers.get('authorization');
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response("Unauthorized", { status: 401 });
   }
 
