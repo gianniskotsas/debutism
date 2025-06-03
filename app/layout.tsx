@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Roboto, Geist_Mono, DM_Serif_Text } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import PlausibleProvider from "next-plausible";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -24,7 +25,8 @@ const dmSerif = DM_Serif_Text({
 
 export const metadata: Metadata = {
   title: "debutism - Get ideas on what to build next",
-  description: "Discover the most successful Product Hunt launches delivered to your inbox daily",
+  description:
+    "Discover the most successful Product Hunt launches delivered to your inbox daily",
 };
 
 export default function RootLayout({
@@ -37,8 +39,10 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${geistMono.variable} ${dmSerif.variable} antialiased`}
       >
-        {children}
-        <Toaster />
+        <PlausibleProvider domain="debutism.com">
+          {children}
+          <Toaster />
+        </PlausibleProvider>
       </body>
     </html>
   );
