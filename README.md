@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+![debutism](https://glhckkdhdbpinqmzpcqs.supabase.co/storage/v1/object/public/thumbnails/debutism/debutism_landing.png)
 
-## Getting Started
+<p align="center">
+	<h1 align="center"><b>debutism</b></h1>
+<p align="center">
+    Discover the best new products, daily.
+    <br />
+    <br />
+    <a href="https://debutism.com">Website</a>
+    ·
+    <a href="https://github.com/debutism/issues">Issues</a>
+  </p>
+</p>
 
-First, run the development server:
+## About debutism
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**debutism** is a minimalist, beautifully designed e-newsletter that keeps you in the loop with the most upvoted product launches on Product Hunt — delivered fresh to your inbox every morning.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Whether you're a maker, early adopter, investor, or just curious about what's trending in tech, debutism helps you stay effortlessly updated with the best products released the day before.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Daily Digest**: A curated, concise selection of the top Product Hunt launches from the previous day.<br/>
+**Minimalist Design**: Clean, distraction-free layout optimized for email readers.<br/>
+**Instant Sign-Up**: Subscribe with just your email — no frills, no noise.<br/>
+**Always Free**: Stay updated without paying a cent.<br/>
+**Built for Launch Watchers**: Ideal for investors, product managers, founders, and tech lovers.<br/>
 
-## Learn More
+## Get started
 
-To learn more about Next.js, take a look at the following resources:
+Visit [debutism.com](https://debutism.com) and enter your email address to start receiving the newsletter. It’s that simple.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## App Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Next.js
+- TypeScript
+- TailwindCSS
+- Supabase (Storage)
+- Resend (Email delivery)
+- New.email (React email design)
+- Product Hunt API (Daily data feed)
+- Dub.co (Short URLs & click analytics)
+- Vercel (Hosting, Cron jobs)
