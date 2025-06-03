@@ -62,6 +62,19 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
           {/* Left side - Content */}
           <div className="flex flex-col justify-center space-y-10 text-left px-2 py-8 lg:py-0">
+          <a 
+            href="https://www.producthunt.com/products/debutism?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-debutism" 
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image 
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=973544&theme=dark&t=1748959158391" 
+              alt="debutism - Be the first to know what others are building | Product Hunt" 
+              width={250}
+              height={54}
+              style={{ width: '250px', height: '54px' }}
+            />
+          </a>
             <h1 className="text-3xl md:text-4xl lg:text-4xl xl:text-5xl font-normal ">
               The <span className="font-dm-serif font-normal italic mr-1.5" style={{ fontFamily: 'var(--font-dm-serif), serif' }}>Newsletter</span> for the tech early adopters
             </h1>
