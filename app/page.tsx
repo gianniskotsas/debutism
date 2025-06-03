@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Spotlight } from "@/components/ui/spotlight";
+import { usePlausible } from 'next-plausible';
+
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -26,6 +28,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const plausible = usePlausible();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -41,6 +44,8 @@ export default function Home() {
       await axios.post("/api/confirmation", { email: data.email });
       toast.success("Successfully subscribed to the newsletter!");
       form.reset();
+      plausible('email_signup');
+
     } catch (error: unknown) {
       let message = "Failed to subscribe. Please try again.";
       
